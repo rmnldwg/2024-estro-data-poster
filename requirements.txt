@@ -1,0 +1,4 @@
+dvc
+matplotlib
+matplotlib-venn
+pandas

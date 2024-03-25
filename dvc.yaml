@@ -1,0 +1,40 @@
+stages:
+  join-data:
+    cmd: >
+      lyscripts data join
+      --inputs data/usz.csv data/umcg.csv
+      --output data/joined.csv
+    deps:
+    - data/usz.csv
+    - data/umcg.csv
+    outs:
+    - data/joined.csv
+
+  enhance-data:
+    cmd: >
+      lyscripts data enhance
+      --params params.yaml
+      data/joined.csv
+      data/enhanced.csv
+    deps:
+    - data/joined.csv
+    params:
+    - params.yaml:
+      - modalities
+    outs:
+    - data/enhanced.csv
+
+  plots:
+    foreach:
+    - contra_by_midext
+    - involvement_by_subsite
+    - ipsi_contra_involvement
+    do:
+      cmd: >
+        python scripts/${item}.py
+      deps:
+      - scripts/${item}.py
+      - data/enhanced.csv
+      outs:
+      - figures/${item}.png:
+          cache: false

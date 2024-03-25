@@ -1,0 +1,144 @@
+schema: '2.0'
+stages:
+  join-data:
+    cmd: "lyscripts data join --inputs data/usz.csv data/umcg.csv --output data/joined.csv\n"
+    deps:
+    - path: data/umcg.csv
+      hash: md5
+      md5: 9afdbfa87c03c3244dcef3cbd616baac
+      size: 263891
+    - path: data/usz.csv
+      hash: md5
+      md5: 5881f048dae854da7312945d1417f3ec
+      size: 212402
+    outs:
+    - path: data/joined.csv
+      hash: md5
+      md5: 7b8f99c302effac2fdad1a43206c4970
+      size: 649783
+  enhance-date:
+    cmd: "lyscripts data enhance --params params.yaml data/joined.csv data/enhanced.csv\n"
+    deps:
+    - path: data/joined.csv
+      hash: md5
+      md5: 7b8f99c302effac2fdad1a43206c4970
+      size: 649783
+    params:
+      params.yaml:
+        modalities:
+          CT:
+          - 0.76
+          - 0.81
+          MRI:
+          - 0.63
+          - 0.81
+          PET:
+          - 0.86
+          - 0.79
+          FNA:
+          - 0.98
+          - 0.8
+          diagnostic_consensus:
+          - 0.86
+          - 0.81
+          pathology:
+          - 1.0
+          - 1.0
+          pCT:
+          - 0.86
+          - 0.81
+          max_llh:
+          - 1.0
+          - 1.0
+    outs:
+    - path: data/enhanced.csv
+      hash: md5
+      md5: 0b6fadcdb41f785682c22e1552f36764
+      size: 803506
+  enhance-data:
+    cmd: "lyscripts data enhance --params params.yaml data/joined.csv data/enhanced.csv\n"
+    deps:
+    - path: data/joined.csv
+      hash: md5
+      md5: 7b8f99c302effac2fdad1a43206c4970
+      size: 649783
+    params:
+      params.yaml:
+        modalities:
+          CT:
+          - 0.76
+          - 0.81
+          MRI:
+          - 0.63
+          - 0.81
+          PET:
+          - 0.86
+          - 0.79
+          FNA:
+          - 0.98
+          - 0.8
+          diagnostic_consensus:
+          - 0.86
+          - 0.81
+          pathology:
+          - 1.0
+          - 1.0
+          pCT:
+          - 0.86
+          - 0.81
+          max_llh:
+          - 1.0
+          - 1.0
+    outs:
+    - path: data/enhanced.csv
+      hash: md5
+      md5: 0b6fadcdb41f785682c22e1552f36764
+      size: 803506
+  plots@contra_by_midext:
+    cmd: "python scripts/contra_by_midext.py\n"
+    deps:
+    - path: data/enhanced.csv
+      hash: md5
+      md5: 0b6fadcdb41f785682c22e1552f36764
+      size: 803506
+    - path: scripts/contra_by_midext.py
+      hash: md5
+      md5: b1ec9b498a1b43795f54aac7ecb31b73
+      size: 1925
+    outs:
+    - path: figures/contra_by_midext.png
+      hash: md5
+      md5: bfdaf00c381df9484b1192de50273a50
+      size: 82374
+  plots@involvement_by_subsite:
+    cmd: "python scripts/involvement_by_subsite.py\n"
+    deps:
+    - path: data/enhanced.csv
+      hash: md5
+      md5: 0b6fadcdb41f785682c22e1552f36764
+      size: 803506
+    - path: scripts/involvement_by_subsite.py
+      hash: md5
+      md5: 44cc2003aa100c8f978cfee4ec26e408
+      size: 2571
+    outs:
+    - path: figures/involvement_by_subsite.png
+      hash: md5
+      md5: d4f2460b7db8ac5d45b51bb55260afb2
+      size: 76636
+  plots@ipsi_contra_involvement:
+    cmd: "python scripts/ipsi_contra_involvement.py\n"
+    deps:
+    - path: data/enhanced.csv
+      hash: md5
+      md5: 0b6fadcdb41f785682c22e1552f36764
+      size: 803506
+    - path: scripts/ipsi_contra_involvement.py
+      hash: md5
+      md5: 818945984f7bddd80b2950a4a695aad8
+      size: 2741
+    outs:
+    - path: figures/ipsi_contra_involvement.png
+      hash: md5
+      md5: f5fa2bd39f2cb452ada1a01c5c71baea
+      size: 70091
