@@ -142,3 +142,79 @@ stages:
       hash: md5
       md5: f5fa2bd39f2cb452ada1a01c5c71baea
       size: 70091
+  involvement-figures@contra_by_midext:
+    cmd: "python scripts/contra_by_midext.py\n"
+    deps:
+    - path: data/enhanced.csv
+      hash: md5
+      md5: 0b6fadcdb41f785682c22e1552f36764
+      size: 803506
+    - path: scripts/contra_by_midext.py
+      hash: md5
+      md5: b1ec9b498a1b43795f54aac7ecb31b73
+      size: 1925
+    outs:
+    - path: figures/contra_by_midext.png
+      hash: md5
+      md5: bfdaf00c381df9484b1192de50273a50
+      size: 82374
+  involvement-figures@involvement_by_subsite:
+    cmd: "python scripts/involvement_by_subsite.py\n"
+    deps:
+    - path: data/enhanced.csv
+      hash: md5
+      md5: 0b6fadcdb41f785682c22e1552f36764
+      size: 803506
+    - path: scripts/involvement_by_subsite.py
+      hash: md5
+      md5: 44cc2003aa100c8f978cfee4ec26e408
+      size: 2571
+    outs:
+    - path: figures/involvement_by_subsite.png
+      hash: md5
+      md5: d4f2460b7db8ac5d45b51bb55260afb2
+      size: 76636
+  involvement-figures@ipsi_contra_involvement:
+    cmd: "python scripts/ipsi_contra_involvement.py\n"
+    deps:
+    - path: data/enhanced.csv
+      hash: md5
+      md5: 0b6fadcdb41f785682c22e1552f36764
+      size: 803506
+    - path: scripts/ipsi_contra_involvement.py
+      hash: md5
+      md5: 818945984f7bddd80b2950a4a695aad8
+      size: 2741
+    outs:
+    - path: figures/ipsi_contra_involvement.png
+      hash: md5
+      md5: f5fa2bd39f2cb452ada1a01c5c71baea
+      size: 70091
+  venn-diagrams:
+    cmd: "python scripts/venn.py\n"
+    deps:
+    - path: data/enhanced.csv
+      hash: md5
+      md5: 0b6fadcdb41f785682c22e1552f36764
+      size: 803506
+    - path: scripts/venn.py
+      hash: md5
+      md5: 974ab77efc4855bfdd3dba0df45cd68d
+      size: 2029
+    outs:
+    - path: figures/venn_hypopharynx_contra.png
+      hash: md5
+      md5: d40abfad09b44850e4b41c824f5bc7e2
+      size: 114928
+    - path: figures/venn_hypopharynx_ipsi.png
+      hash: md5
+      md5: 67b7276de0ffa88cc0b5dcbddf1ba770
+      size: 118238
+    - path: figures/venn_larynx_contra.png
+      hash: md5
+      md5: 404ca6d97fe1c7d47f1aebbdb8b37ee5
+      size: 110360
+    - path: figures/venn_larynx_ipsi.png
+      hash: md5
+      md5: 071fa6d02e51b4aec8252a241d0d40f4
+      size: 115814

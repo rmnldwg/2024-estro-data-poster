@@ -1,20 +1,13 @@
 """
-Venn diagram.
+Create a Venn diagram of co-involvement in the LNLs II, III, and IV.
 """
 from itertools import product
+from pathlib import Path
 import matplotlib.pyplot as plt
 from matplotlib_venn import venn3
 import pandas as pd
-import numpy as np
 
-LABELS = ["I", "II", "III", "IV", "V", "VI", "VII"][::-1]
-COLORS = {
-    "green": "#00afa5",
-    "red": "#ae0060",
-    "blue": "#005ea8",
-    "orange": "#f17900",
-    "gray": "#c5d5db",
-}
+from shared import LNLS, COLORS, create_parser
 
 
 def prepare_venn_data(ipsi: pd.DataFrame):
@@ -51,7 +44,10 @@ def plot_venn_diagram(ipsi, venn, venn_data):
 
 
 if __name__ == "__main__":
-    data = pd.read_csv("enhanced.csv", header=[0,1,2])
+    parser = create_parser(file_name=Path(__file__).stem, description=__doc__)
+    args = parser.parse_args()
+
+    data = pd.read_csv(args.input, header=[0,1,2])
 
     for side in ["ipsi", "contra"]:
         for location in ["hypopharynx", "larynx"]:
@@ -61,5 +57,6 @@ if __name__ == "__main__":
             ]
             venn_data = prepare_venn_data(subdata)
             venn_plot = plot_venn_diagram(subdata, plt.gca(), venn_data)
-            plt.savefig(f"venn_{location}_{side}.png", dpi=300)
+            output = args.output.with_name(f"venn_{location}_{side}.png")
+            plt.savefig(output, dpi=300)
             plt.clf()

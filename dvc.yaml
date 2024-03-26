@@ -24,7 +24,7 @@ stages:
     outs:
     - data/enhanced.csv
 
-  plots:
+  involvement-figures:
     foreach:
     - contra_by_midext
     - involvement_by_subsite
@@ -38,3 +38,19 @@ stages:
       outs:
       - figures/${item}.png:
           cache: false
+
+  venn-diagrams:
+    cmd: >
+      python scripts/venn.py
+    deps:
+    - scripts/venn.py
+    - data/enhanced.csv
+    outs:
+    - figures/venn_hypopharynx_ipsi.png:
+        cache: false
+    - figures/venn_hypopharynx_contra.png:
+        cache: false
+    - figures/venn_larynx_ipsi.png:
+        cache: false
+    - figures/venn_larynx_contra.png:
+        cache: false
