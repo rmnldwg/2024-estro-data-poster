@@ -1,4 +1,18 @@
 stages:
+  enhance-usz-data:
+    cmd: >
+      lyscripts data enhance
+      --params params.yaml
+      data/usz.csv
+      data/enhanced_usz.csv
+    deps:
+    - data/usz.csv
+    params:
+    - params.yaml:
+      - modalities
+    outs:
+    - data/enhanced_usz.csv
+
   join-data:
     cmd: >
       lyscripts data join
@@ -10,7 +24,7 @@ stages:
     outs:
     - data/joined.csv
 
-  enhance-data:
+  enhance-joined-data:
     cmd: >
       lyscripts data enhance
       --params params.yaml
@@ -24,7 +38,41 @@ stages:
     outs:
     - data/enhanced.csv
 
-  involvement-figures:
+  involvement-figures-usz-data:
+    foreach:
+    - contra_by_midext_usz
+    - ipsi_contra_involvement_usz
+    do:
+      cmd: >
+        python scripts/${item}.py --input data/enhanced_usz.csv
+      deps:
+      - scripts/shared.py
+      - scripts/${item}.py
+      - data/enhanced_usz.csv
+      outs:
+      - figures/${item}.png:
+          cache: false
+
+  venn-diagrams-usz-data:
+    cmd: >
+      python scripts/venn.py
+      --input data/enhanced_usz.csv
+      --output figures/venn_usz/tmp.png
+    deps:
+    - scripts/shared.py
+    - scripts/venn.py
+    - data/enhanced_usz.csv
+    outs:
+    - figures/venn_usz/hypopharynx_ipsi.png:
+        cache: false
+    - figures/venn_usz/hypopharynx_contra.png:
+        cache: false
+    - figures/venn_usz/larynx_ipsi.png:
+        cache: false
+    - figures/venn_usz/larynx_contra.png:
+        cache: false
+
+  involvement-figures-joined-data:
     foreach:
     - contra_by_midext
     - involvement_by_subsite
@@ -33,24 +81,26 @@ stages:
       cmd: >
         python scripts/${item}.py
       deps:
+      - scripts/shared.py
       - scripts/${item}.py
       - data/enhanced.csv
       outs:
       - figures/${item}.png:
           cache: false
 
-  venn-diagrams:
+  venn-diagrams-joined-data:
     cmd: >
-      python scripts/venn.py
+      python scripts/venn.py --output figures/venn_joined/tmp.png
     deps:
+    - scripts/shared.py
     - scripts/venn.py
     - data/enhanced.csv
     outs:
-    - figures/venn_hypopharynx_ipsi.png:
+    - figures/venn_joined/hypopharynx_ipsi.png:
         cache: false
-    - figures/venn_hypopharynx_contra.png:
+    - figures/venn_joined/hypopharynx_contra.png:
         cache: false
-    - figures/venn_larynx_ipsi.png:
+    - figures/venn_joined/larynx_ipsi.png:
         cache: false
-    - figures/venn_larynx_contra.png:
+    - figures/venn_joined/larynx_contra.png:
         cache: false

@@ -7,6 +7,7 @@ from pathlib import Path
 
 FIGURES = Path("figures")
 DATA = Path("data")
+DPI = 600
 
 LNLS = ["I", "II", "III", "IV", "V", "VI", "VII"][::-1]
 COLORS = {

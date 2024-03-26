@@ -6,8 +6,9 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
+from tueplots import figsizes, fontsizes
 
-from shared import COLORS, LNLS, COLS, lnls_for_, create_parser, WIDTH, OFFSET
+from shared import COLORS, LNLS, COLS, lnls_for_, create_parser, WIDTH, OFFSET, DPI
 
 
 def main():
@@ -25,6 +26,10 @@ def main():
     involved = 100 * _grouped.sum()
     total = _grouped.count()
 
+    # configure figure
+    plt.rcParams.update(figsizes.aaai2024_half(height_to_width_ratio=1.))
+    plt.rcParams.update(fontsizes.aaai2024())
+
     # create figure
     fig, axes = plt.subplots(nrows=1, ncols=1)
 
@@ -35,14 +40,14 @@ def main():
     axes.bar(
         x=positions - OFFSET,
         height=involved.loc[True, lnls_for_(side)] / total.loc[True, lnls_for_(side)],
-        color=COLORS["blue"],
+        color=COLORS["orange"],
         label="with midline extension",
         **barplot_config,
     )
     axes.bar(
         x=positions,
         height=involved.loc[False, lnls_for_(side)] / total.loc[False, lnls_for_(side)],
-        color=COLORS["orange"],
+        color=COLORS["blue"],
         label="without midline extension",
         **barplot_config,
     )
@@ -55,7 +60,8 @@ def main():
     axes.set_xticks(positions)
     axes.set_xticklabels(LNLS)
 
-    axes.set_yticks(np.linspace(0, 20, 5))
+    axes.set_yticks(np.linspace(0, 35, 8))
+    axes.set_ylim(0, 35)
     axes.set_ylabel("Prevalence of Involvement [%]")
     axes.grid(visible=True, axis="y", alpha=0.5, color=COLORS["gray"])
 
@@ -63,7 +69,8 @@ def main():
     axes.legend(labelspacing=0.15, fontsize="small")
 
     # save the figure
-    plt.savefig(args.output, dpi=300)
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    plt.savefig(args.output, dpi=DPI)
 
 
 if __name__ == "__main__":

@@ -7,9 +7,10 @@ from matplotlib import gridspec
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
+from tueplots import figsizes, fontsizes
 
 from shared import (
-    COLORS, LNLS, COLS, create_parser, lnls_for_, OFFSET, WIDTH, make_invisible
+    COLORS, LNLS, COLS, create_parser, lnls_for_, OFFSET, WIDTH, make_invisible, DPI
 )
 
 
@@ -26,6 +27,10 @@ def main():
     _grouped = data.groupby(by=[COLS.t_stage])
     involved = 100 * _grouped.sum()
     total = _grouped.count()
+
+    # configure figure
+    plt.rcParams.update(figsizes.aaai2024_full(nrows=1, ncols=2, height_to_width_ratio=1.))
+    plt.rcParams.update(fontsizes.aaai2024())
 
     fig = plt.figure()
     gs = gridspec.GridSpec(nrows=1, ncols=2, width_ratios=[1, 1], wspace=0.15)
@@ -77,7 +82,8 @@ def main():
     right_axes.set_title("ipsilateral")
 
     make_invisible(both_axes)
-    plt.savefig(args.output, dpi=300)
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    plt.savefig(args.output, dpi=DPI)
 
 
 if __name__ == "__main__":

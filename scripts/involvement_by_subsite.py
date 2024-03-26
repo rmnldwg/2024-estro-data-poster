@@ -7,8 +7,9 @@ from matplotlib import gridspec
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
+from tueplots import figsizes, fontsizes
 
-from shared import LNLS, COLORS, COLS, lnls_for_, create_parser, make_invisible
+from shared import LNLS, COLORS, COLS, lnls_for_, create_parser, make_invisible, DPI
 
 
 COLORS_LIST = list(COLORS.values())[::-1]
@@ -20,7 +21,8 @@ def merge_c13(val: str):
     return val
 
 
-if __name__ == "__main__":
+def main():
+    """Run the main function."""
     parser = create_parser(file_name=Path(__file__).stem, description=__doc__)
     args = parser.parse_args()
 
@@ -34,8 +36,12 @@ if __name__ == "__main__":
     involved = 100 * _grouped.sum()
     total = _grouped.count()
 
+    # configure figure
+    plt.rcParams.update(figsizes.aaai2024_full(nrows=1, ncols=2, height_to_width_ratio=1.))
+    plt.rcParams.update(fontsizes.aaai2024())
+
     fig = plt.figure()
-    gs = gridspec.GridSpec(nrows=1, ncols=2, width_ratios=[1, 1], wspace=0.15)
+    gs = gridspec.GridSpec(nrows=1, ncols=2, width_ratios=[1, 1], wspace=0.125)
     both_axes = fig.add_subplot(gs[:])
     left_axes = fig.add_subplot(gs[0])
     right_axes = fig.add_subplot(gs[1], sharey=left_axes)
@@ -68,11 +74,16 @@ if __name__ == "__main__":
     )
     left_axes.yaxis.tick_right()
     plt.setp(right_axes.get_yticklabels(), visible=False)
-    xlim = right_axes.get_xlim()
-    left_axes.set_xlim(xlim[::-1])
+    right_axes.set_xlim(0., 70.)
+    left_axes.set_xlim(70., 0.)
     both_axes.set_xlabel("Prevalence of Involvement [%]")
     left_axes.set_title("contralateral")
     right_axes.set_title("ipsilateral")
 
     make_invisible(both_axes)
-    plt.savefig(args.output, dpi=300)
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    plt.savefig(args.output, dpi=DPI)
+
+
+if __name__ == "__main__":
+    main()

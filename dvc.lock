@@ -151,13 +151,13 @@ stages:
       size: 803506
     - path: scripts/contra_by_midext.py
       hash: md5
-      md5: b1ec9b498a1b43795f54aac7ecb31b73
-      size: 1925
+      md5: bb0e50b6305628dd04a3c99e211c1f62
+      size: 1950
     outs:
     - path: figures/contra_by_midext.png
       hash: md5
-      md5: bfdaf00c381df9484b1192de50273a50
-      size: 82374
+      md5: 0385aa3b952bed5f7113a3dabc1693a5
+      size: 88167
   involvement-figures@involvement_by_subsite:
     cmd: "python scripts/involvement_by_subsite.py\n"
     deps:
@@ -199,8 +199,8 @@ stages:
       size: 803506
     - path: scripts/venn.py
       hash: md5
-      md5: 974ab77efc4855bfdd3dba0df45cd68d
-      size: 2029
+      md5: 07c205077973e3f1f1ca16d4b4b68b17
+      size: 2087
     outs:
     - path: figures/venn_hypopharynx_contra.png
       hash: md5
@@ -218,3 +218,245 @@ stages:
       hash: md5
       md5: 071fa6d02e51b4aec8252a241d0d40f4
       size: 115814
+  enhance-usz-data:
+    cmd: "lyscripts data enhance --params params.yaml data/usz.csv data/enhanced_usz.csv\n"
+    deps:
+    - path: data/usz.csv
+      hash: md5
+      md5: 5881f048dae854da7312945d1417f3ec
+      size: 212402
+    params:
+      params.yaml:
+        modalities:
+          CT:
+          - 0.76
+          - 0.81
+          MRI:
+          - 0.63
+          - 0.81
+          PET:
+          - 0.86
+          - 0.79
+          FNA:
+          - 0.98
+          - 0.8
+          diagnostic_consensus:
+          - 0.86
+          - 0.81
+          pathology:
+          - 1.0
+          - 1.0
+          pCT:
+          - 0.86
+          - 0.81
+          max_llh:
+          - 1.0
+          - 1.0
+    outs:
+    - path: data/enhanced_usz.csv
+      hash: md5
+      md5: 7a0017600f3acaff913e4112a3f10a07
+      size: 263102
+  enhance-joined-data:
+    cmd: "lyscripts data enhance --params params.yaml data/joined.csv data/enhanced.csv\n"
+    deps:
+    - path: data/joined.csv
+      hash: md5
+      md5: 7b8f99c302effac2fdad1a43206c4970
+      size: 649783
+    params:
+      params.yaml:
+        modalities:
+          CT:
+          - 0.76
+          - 0.81
+          MRI:
+          - 0.63
+          - 0.81
+          PET:
+          - 0.86
+          - 0.79
+          FNA:
+          - 0.98
+          - 0.8
+          diagnostic_consensus:
+          - 0.86
+          - 0.81
+          pathology:
+          - 1.0
+          - 1.0
+          pCT:
+          - 0.86
+          - 0.81
+          max_llh:
+          - 1.0
+          - 1.0
+    outs:
+    - path: data/enhanced.csv
+      hash: md5
+      md5: 0b6fadcdb41f785682c22e1552f36764
+      size: 803506
+  involvement-figures-usz-data@contra_by_midext_usz:
+    cmd: "python scripts/contra_by_midext_usz.py --input data/enhanced_usz.csv\n"
+    deps:
+    - path: data/enhanced_usz.csv
+      hash: md5
+      md5: 7a0017600f3acaff913e4112a3f10a07
+      size: 263102
+    - path: scripts/contra_by_midext_usz.py
+      hash: md5
+      md5: 3b951cbb5fb8b0df6d29ebce9f22eaf4
+      size: 2875
+    - path: scripts/shared.py
+      hash: md5
+      md5: 780f94125ae8efd1e80a4f270a05c317
+      size: 1672
+    outs:
+    - path: figures/contra_by_midext_usz.png
+      hash: md5
+      md5: ffc64bd7f5f25c775b0777e2e7187dfe
+      size: 214559
+  involvement-figures-usz-data@ipsi_contra_involvement_usz:
+    cmd: "python scripts/ipsi_contra_involvement_usz.py --input data/enhanced_usz.csv\n"
+    deps:
+    - path: data/enhanced_usz.csv
+      hash: md5
+      md5: 7a0017600f3acaff913e4112a3f10a07
+      size: 263102
+    - path: scripts/ipsi_contra_involvement_usz.py
+      hash: md5
+      md5: 8ddd3810a876e2c9dd2504cbbc535f9e
+      size: 3333
+    - path: scripts/shared.py
+      hash: md5
+      md5: 780f94125ae8efd1e80a4f270a05c317
+      size: 1672
+    outs:
+    - path: figures/ipsi_contra_involvement_usz.png
+      hash: md5
+      md5: 833dda1572af4f768b591c9ba1ea57f1
+      size: 166686
+  venn-diagrams-usz-data:
+    cmd: "python scripts/venn.py --input data/enhanced_usz.csv --output figures/venn_usz/tmp.png\n"
+    deps:
+    - path: data/enhanced_usz.csv
+      hash: md5
+      md5: 7a0017600f3acaff913e4112a3f10a07
+      size: 263102
+    - path: scripts/shared.py
+      hash: md5
+      md5: 780f94125ae8efd1e80a4f270a05c317
+      size: 1672
+    - path: scripts/venn.py
+      hash: md5
+      md5: e4856e467e778e817f46de1b84dc05ee
+      size: 2327
+    outs:
+    - path: figures/venn_usz/hypopharynx_contra.png
+      hash: md5
+      md5: d87d119990e6f7b3b35a84ca2e949ccf
+      size: 165944
+    - path: figures/venn_usz/hypopharynx_ipsi.png
+      hash: md5
+      md5: 13be3bf525eb16ea80dc5f059de85725
+      size: 191191
+    - path: figures/venn_usz/larynx_contra.png
+      hash: md5
+      md5: ff47102314f65e9d5e1faa77c2112918
+      size: 133470
+    - path: figures/venn_usz/larynx_ipsi.png
+      hash: md5
+      md5: 78a95edeed43633b44ac43756874ab1d
+      size: 162874
+  involvement-figures-joined-data@contra_by_midext:
+    cmd: "python scripts/contra_by_midext.py\n"
+    deps:
+    - path: data/enhanced.csv
+      hash: md5
+      md5: 0b6fadcdb41f785682c22e1552f36764
+      size: 803506
+    - path: scripts/contra_by_midext.py
+      hash: md5
+      md5: 8cb164253cb9646bb4424214d7382994
+      size: 2198
+    - path: scripts/shared.py
+      hash: md5
+      md5: 780f94125ae8efd1e80a4f270a05c317
+      size: 1672
+    outs:
+    - path: figures/contra_by_midext.png
+      hash: md5
+      md5: aa71b88d35a911fa6e812902ab4c02bd
+      size: 137802
+  involvement-figures-joined-data@involvement_by_subsite:
+    cmd: "python scripts/involvement_by_subsite.py\n"
+    deps:
+    - path: data/enhanced.csv
+      hash: md5
+      md5: 0b6fadcdb41f785682c22e1552f36764
+      size: 803506
+    - path: scripts/involvement_by_subsite.py
+      hash: md5
+      md5: aee225a177f9d8c524e8145b0476a1a5
+      size: 2893
+    - path: scripts/shared.py
+      hash: md5
+      md5: 780f94125ae8efd1e80a4f270a05c317
+      size: 1672
+    outs:
+    - path: figures/involvement_by_subsite.png
+      hash: md5
+      md5: 38f7e31562c726168ef780a676821858
+      size: 131188
+  involvement-figures-joined-data@ipsi_contra_involvement:
+    cmd: "python scripts/ipsi_contra_involvement.py\n"
+    deps:
+    - path: data/enhanced.csv
+      hash: md5
+      md5: 0b6fadcdb41f785682c22e1552f36764
+      size: 803506
+    - path: scripts/ipsi_contra_involvement.py
+      hash: md5
+      md5: 7596064bbfea6761ad96e0ef278c762e
+      size: 3007
+    - path: scripts/shared.py
+      hash: md5
+      md5: 780f94125ae8efd1e80a4f270a05c317
+      size: 1672
+    outs:
+    - path: figures/ipsi_contra_involvement.png
+      hash: md5
+      md5: b2db6f06d343ce2c150d5f1a6e3642ea
+      size: 119275
+  venn-diagrams-joined-data:
+    cmd: "python scripts/venn.py --output figures/venn_joined/tmp.png\n"
+    deps:
+    - path: data/enhanced.csv
+      hash: md5
+      md5: 0b6fadcdb41f785682c22e1552f36764
+      size: 803506
+    - path: scripts/shared.py
+      hash: md5
+      md5: 780f94125ae8efd1e80a4f270a05c317
+      size: 1672
+    - path: scripts/venn.py
+      hash: md5
+      md5: e4856e467e778e817f46de1b84dc05ee
+      size: 2327
+    outs:
+    - path: figures/venn_joined/hypopharynx_contra.png
+      hash: md5
+      md5: 0f69a146c1a1e553b63e20f746645d7c
+      size: 180791
+    - path: figures/venn_joined/hypopharynx_ipsi.png
+      hash: md5
+      md5: 9599353cf65cb43b03f4b0eb10c5e7dc
+      size: 193014
+    - path: figures/venn_joined/larynx_contra.png
+      hash: md5
+      md5: ba70b90f9eca711bed846107fbe38c72
+      size: 175700
+    - path: figures/venn_joined/larynx_ipsi.png
+      hash: md5
+      md5: 779b4773b5b8766b27649803673262a8
+      size: 187811
