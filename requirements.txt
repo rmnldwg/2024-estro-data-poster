@@ -2,3 +2,4 @@ dvc
 matplotlib
 matplotlib-venn
 pandas
+git+https://github.com/rmnldwg/lyscripts@dev
