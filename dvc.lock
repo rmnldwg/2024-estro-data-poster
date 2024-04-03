@@ -305,8 +305,8 @@ stages:
       size: 263102
     - path: scripts/contra_by_midext_usz.py
       hash: md5
-      md5: 3b951cbb5fb8b0df6d29ebce9f22eaf4
-      size: 2875
+      md5: a1db990f237d28f299976fa82248a1a7
+      size: 2446
     - path: scripts/shared.py
       hash: md5
       md5: 780f94125ae8efd1e80a4f270a05c317
@@ -314,8 +314,8 @@ stages:
     outs:
     - path: figures/contra_by_midext_usz.png
       hash: md5
-      md5: ffc64bd7f5f25c775b0777e2e7187dfe
-      size: 214559
+      md5: 284a596e6e50d9a78567cb73421565dc
+      size: 155152
   involvement-figures-usz-data@ipsi_contra_involvement_usz:
     cmd: "python scripts/ipsi_contra_involvement_usz.py --input data/enhanced_usz.csv\n"
     deps:
@@ -325,8 +325,8 @@ stages:
       size: 263102
     - path: scripts/ipsi_contra_involvement_usz.py
       hash: md5
-      md5: 8ddd3810a876e2c9dd2504cbbc535f9e
-      size: 3333
+      md5: bc5944e1efdcb2bec22926fa55775f18
+      size: 2638
     - path: scripts/shared.py
       hash: md5
       md5: 780f94125ae8efd1e80a4f270a05c317
@@ -334,8 +334,8 @@ stages:
     outs:
     - path: figures/ipsi_contra_involvement_usz.png
       hash: md5
-      md5: 833dda1572af4f768b591c9ba1ea57f1
-      size: 166686
+      md5: 7df29bd030e1ed773d5af5202c8c3429
+      size: 138398
   venn-diagrams-usz-data:
     cmd: "python scripts/venn.py --input data/enhanced_usz.csv --output figures/venn_usz/tmp.png\n"
     deps:

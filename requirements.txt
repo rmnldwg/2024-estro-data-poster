@@ -1,5 +1,6 @@
 dvc
 matplotlib
 matplotlib-venn
+tueplots
 pandas
 git+https://github.com/rmnldwg/lyscripts@dev

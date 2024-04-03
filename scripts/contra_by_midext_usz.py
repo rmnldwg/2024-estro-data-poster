@@ -2,13 +2,14 @@
 Figures and plots for 2024 ESTRO poster on Hypopharynx/Larynx dataset.
 """
 from pathlib import Path
+from itertools import cycle
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 from tueplots import figsizes, fontsizes
 
 from shared import LNLS, COLORS, create_parser, COLS, WIDTH, OFFSET, lnls_for_, DPI
-
+COLOR_CYCLE = cycle([COLORS["red"], COLORS["orange"], COLORS["blue"], COLORS["green"]])
 
 def main():
     """Run the main function."""
@@ -22,7 +23,9 @@ def main():
     total = data.groupby(by=[COLS.location]).count()
 
     # configure figure
-    plt.rcParams.update(figsizes.aaai2024_half(height_to_width_ratio=1.))
+    nrows, ncols = 1, 2
+
+    plt.rcParams.update(figsizes.aaai2024_full(nrows=nrows, ncols=ncols, height_to_width_ratio=1.))
     plt.rcParams.update(fontsizes.aaai2024())
 
     # configure hatch
@@ -30,56 +33,38 @@ def main():
     plt.rcParams["hatch.linewidth"] = linewidth
     plt.rcParams["hatch.color"] = COLORS["red"]
 
-    fig, axes = plt.subplots(nrows=1, ncols=1)
+    fig, axes = plt.subplots(nrows, ncols, sharey=True)
 
     positions = np.arange(len(LNLS))
     barplot_config = {"width": WIDTH, "zorder": 10}
 
     for j, location in enumerate(["hypopharynx", "larynx"]):
-        color = COLORS["blue" if location == "larynx" else "orange"]
-        edgecolor = COLORS["green" if location == "larynx" else "red"]
-        axes.bar(
-            x=positions - (1 - j) * OFFSET,
-            height=(
-                involved.loc[(False, location), lnls_for_(side)]
-                / total.loc[location, lnls_for_(side)]
-            ),
-            color=color,
-            edgecolor=color,
-            linewidth=linewidth,
-            label=f"{location} (without midline extension)",
-            **barplot_config,
-        )
-        axes.bar(
-            x=positions - (1 - j) * OFFSET,
-            height=(
-                involved.loc[(True, location), lnls_for_(side)]
-                / total.loc[location, lnls_for_(side)]
-            ),
-            bottom=(
-                involved.loc[(False, location), lnls_for_(side)]
-                / total.loc[location, lnls_for_(side)]
-            ),
-            color=color,
-            hatch="////",
-            edgecolor=edgecolor,
-            linewidth=linewidth,
-            label=f"{location} (with midline extension)",
-            **barplot_config,
-        )
+        for i, midext in enumerate([True, False]):
+            color = next(COLOR_CYCLE)
+            axes[j].bar(
+                x=positions - (1 - i) * OFFSET,
+                height=(
+                    involved.loc[(midext, location), lnls_for_(side)]
+                    / total.loc[location, lnls_for_(side)]
+                ),
+                color=color,
+                label=("with" if midext else "without") + " midline extension",
+                **barplot_config,
+            )
 
-    xlims = axes.get_xlim()
-    axes.set_xlim(xlims[::-1])
-    axes.set_xticks(np.arange(len(LNLS)))
-    axes.set_xticklabels(LNLS)
-    axes.set_xlabel("Lymph Node Level")
+        xlims = axes[j].get_xlim()
+        axes[j].set_xlim(xlims[::-1])
+        axes[j].set_xticks(np.arange(len(LNLS)))
+        axes[j].set_xticklabels(LNLS)
+        axes[j].set_xlabel("Lymph Node Level")
 
-    axes.set_yticks(np.linspace(0, 30, 7))
-    axes.set_ylabel("Prevalence of Involvement [%]")
-    axes.grid(visible=True, axis="y", alpha=0.5, color=COLORS["gray"])
+        axes[j].grid(visible=True, axis="y", alpha=0.5, color=COLORS["gray"])
 
-    axes.set_title("Contralateral Involvement by Midline Extension")
-    axes.legend(labelspacing=0.15, fontsize="small")
+        axes[j].set_title(location.capitalize())
+        axes[j].legend(labelspacing=0.15, fontsize="small")
+
+    axes[0].set_ylabel("Prevalence of involvement [%]")
+    axes[0].set_yticks(np.linspace(0., 21., 8))
 
     args.output.parent.mkdir(parents=True, exist_ok=True)
     plt.savefig(args.output, dpi=DPI)

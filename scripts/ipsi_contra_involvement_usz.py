@@ -4,13 +4,22 @@ Figures and plots for 2024 ESTRO poster on Hypopharynx/Larynx dataset.
 from pathlib import Path
 from matplotlib import gridspec
 import matplotlib.pyplot as plt
+from itertools import cycle
 import pandas as pd
 import numpy as np
 from tueplots import figsizes, fontsizes
 
 from shared import (
-    COLORS, LNLS, create_parser, OFFSET, WIDTH, COLS, make_invisible, lnls_for_, DPI
+    COLORS,
+    LNLS,
+    create_parser,
+    OFFSET,
+    WIDTH,
+    COLS,
+    lnls_for_,
+    DPI,
 )
+COLOR_CYCLE = cycle([COLORS["red"], COLORS["orange"], COLORS["blue"], COLORS["green"]])
 
 
 def main():
@@ -33,58 +42,41 @@ def main():
     plt.rcParams.update(figsizes.aaai2024_full(nrows=1, ncols=2, height_to_width_ratio=1.))
     plt.rcParams.update(fontsizes.aaai2024())
 
-    fig = plt.figure()
-    gs = gridspec.GridSpec(nrows=1, ncols=2, width_ratios=[1, 1], wspace=0.125)
-    both_axes = fig.add_subplot(gs[:])
-    left_axes = fig.add_subplot(gs[0])
-    right_axes = fig.add_subplot(gs[1], sharey=left_axes)
-    axes = [left_axes, right_axes]
+    fig, axes = plt.subplots(nrows=1, ncols=2, sharey=True)
+    left_axes = axes[0]
+    right_axes = axes[1]
 
-
-    positions = np.arange(len(LNLS))
-    barplot_config = {"height": WIDTH, "zorder": 10}
+    positions = np.arange(len(LNLS))[::-1]
+    barplot_config = {"width": WIDTH, "zorder": 10}
 
     for j, location in enumerate(["hypopharynx", "larynx"]):
-        color = COLORS["blue" if location == "larynx" else "orange"]
-        edgecolor = COLORS["green" if location == "larynx" else "red"]
-        for i, side in enumerate(["contra", "ipsi"]):
-            left = [0] * len(LNLS)
-            for t_stage in ["early", "late"]:
-                axes[i].barh(
-                    y=positions - (1 - j) * OFFSET,
-                    width=(
-                        involved.loc[(t_stage, location), lnls_for_(side)]
-                        / total.loc[location, lnls_for_(side)]
-                    ),
-                    left=left,
-                    color=color,
-                    hatch="////" if t_stage == "late" else None,
-                    edgecolor=edgecolor if t_stage == "late" else color,
-                    linewidth=linewidth,
-                    label=f"{location} ({t_stage})",
-                    **barplot_config,
-                )
-                left=(
-                    involved.loc[(t_stage, location), lnls_for_(side)]
-                    / total.loc[location, lnls_for_(side)]
-                )
-            axes[i].set_xticks(np.linspace(0, 60, 7))
-            axes[i].grid(visible=True, axis="x", alpha=0.5, color=COLORS["gray"])
+        for i, t_stage in enumerate(["late", "early"]):
+            color = next(COLOR_CYCLE)
+            axes[j].bar(
+                x=positions + (1 - i) * OFFSET,
+                height=(
+                    involved.loc[(t_stage, location), lnls_for_("ipsi")]
+                    / total.loc[location, lnls_for_("ipsi")]
+                ),
+                color=color,
+                linewidth=linewidth,
+                label=f"{t_stage} T-stage",
+                **barplot_config,
+            )
+        axes[j].set_title(location.capitalize())
+        axes[j].grid(visible=True, axis="y", alpha=0.5, color=COLORS["gray"])
 
-    left_axes.set_yticklabels(LNLS)
-    left_axes.set_yticks(positions)
-    left_axes.yaxis.tick_right()
-    plt.setp(right_axes.get_yticklabels(), visible=False)
+    left_axes.set_xticklabels(LNLS)
+    left_axes.set_xticks(positions)
+    left_axes.set_xlabel("LNL")
+    right_axes.set_xticklabels(LNLS)
+    right_axes.set_xticks(positions)
+    right_axes.set_xlabel("LNL")
+    left_axes.set_ylabel("Prevalence of involvement [%]")
 
-    right_axes.set_xlim(0., 60.)
-    left_axes.set_xlim(60., 0.)
+    left_axes.legend(labelspacing=0.15, fontsize="small")
+    right_axes.legend(labelspacing=0.15, fontsize="small")
 
-    both_axes.set_xlabel("Prevalence of Involvement [%]")
-    left_axes.set_title("contralateral")
-    right_axes.set_title("ipsilateral")
-    left_axes.legend(loc="lower left", labelspacing=0.15, fontsize="small")
-
-    make_invisible(both_axes)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     plt.savefig(args.output, dpi=DPI)
 
