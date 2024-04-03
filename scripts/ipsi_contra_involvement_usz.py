@@ -68,10 +68,10 @@ def main():
 
     left_axes.set_xticklabels(LNLS)
     left_axes.set_xticks(positions)
-    left_axes.set_xlabel("LNL")
+    left_axes.set_xlabel("Lymph Node Level")
     right_axes.set_xticklabels(LNLS)
     right_axes.set_xticks(positions)
-    right_axes.set_xlabel("LNL")
+    right_axes.set_xlabel("Lymph Node Level")
     left_axes.set_ylabel("Prevalence of involvement [%]")
 
     left_axes.legend(labelspacing=0.15, fontsize="small")
